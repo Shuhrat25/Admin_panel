@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const pool = require('./db'); // Наш файл подключения к PostgreSQL
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Настройка Middleware
 app.use(cors()); // Разрешаем фронтенду (порт 5173) делать запросы к бэкенду (порт 3000)

@@ -1,21 +1,17 @@
 const { Pool } = require('pg');
 
-// Настройки подключения к твоей локальной базе PostgreSQL
+// Если есть ссылка из облака (DATABASE_URL), используем её. Иначе - локальную базу.
+const connectionString = process.env.DATABASE_URL || 'postgres://postgres:1234@localhost:5432/user_management';
+
 const pool = new Pool({
-  user: 'postgres',         // стандартный пользователь
-  host: 'localhost',
-  database: 'user_management', // имя базы, которую мы создали
-  password: '1234',   // замени на пароль из шага установки
-  port: 5432,               // стандартный порт
+  connectionString,
+  // SSL нужен для подключения к облачным базам данных
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
-// Проверка подключения
 pool.connect((err) => {
-  if (err) {
-    console.error('Ошибка подключения к PostgreSQL:', err.message);
-  } else {
-    console.log('Успешное подключение к базе данных PostgreSQL!');
-  }
+  if (err) console.error('Ошибка подключения к БД:', err.message);
+  else console.log('Успешное подключение к PostgreSQL!');
 });
 
 module.exports = pool;

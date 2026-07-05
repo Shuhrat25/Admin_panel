@@ -28,8 +28,7 @@
 
 ### 1. Клонирование репозитория
 ```bash
-git clone [ВСТАВИТЬ_ССЫЛКУ_НА_РЕПОЗИТОРИЙ]
-cd [ИМЯ_ПАПКИ_ПРОЕКТА]
+git clone https://github.com/Shuhrat25/Admin_panel.git
 ```
 
 ### 2. Настройка базы данных (PostgreSQL)
