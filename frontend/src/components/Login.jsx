@@ -1,16 +1,20 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
+import { Container, Card, Form, Button, Alert, Spinner, InputGroup } from 'react-bootstrap';
 
-// Принимаем пропс setIsAuthenticated
 function Login({ setIsAuthenticated }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
-  const navigate = useNavigate(); // Хук для перенаправления
+  // Состояние для галочки "Запомнить меня"
+  const [rememberMe, setRememberMe] = useState(false);
+  
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!email || !password) {
@@ -18,14 +22,42 @@ function Login({ setIsAuthenticated }) {
       return;
     }
     
-    console.log('Попытка входа:', { email, password });
+    setIsLoading(true);
     setError('');
-    
-    // Меняем статус авторизации на true
-    setIsAuthenticated(true);
-    
-    // Перенаправляем пользователя на главную страницу (в Admin Panel)
-    navigate('/');
+
+    try {
+      const response = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Ошибка входа');
+      }
+
+      const userData = data.user;
+
+      // ЛОГИКА "ЗАПОМНИТЬ МЕНЯ"
+      if (rememberMe) {
+        // Ставим срок годности: текущее время + 3 часа (в миллисекундах)
+        userData.expiry = Date.now() + 3 * 60 * 60 * 1000;
+        localStorage.setItem('currentUser', JSON.stringify(userData));
+      } else {
+        // Если галочки нет, сохраняем только на время жизни вкладки браузера
+        sessionStorage.setItem('currentUser', JSON.stringify(userData));
+      }
+      
+      setIsAuthenticated(true);
+      navigate('/');
+      
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -45,25 +77,42 @@ function Login({ setIsAuthenticated }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="loginPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control 
-                type="password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <InputGroup>
+                <Form.Control 
+                  type={showPassword ? "text" : "password"} 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+                <Button 
+                  variant="outline-secondary" 
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex="-1"
+                >
+                  <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i>
+                </Button>
+              </InputGroup>
             </Form.Group>
 
             <Form.Group className="mb-4" controlId="loginRemember">
-              <Form.Check type="checkbox" label="Remember me" />
+              <Form.Check 
+                type="checkbox" 
+                label="Remember me" 
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                disabled={isLoading} 
+              />
             </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-100 mb-3">
-              Sign In
+            <Button variant="primary" type="submit" className="w-100 mb-3" disabled={isLoading}>
+              {isLoading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : 'Sign In'}
             </Button>
           </Form>
 

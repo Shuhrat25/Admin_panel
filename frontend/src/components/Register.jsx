@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
+import { Container, Card, Form, Button, Alert, Spinner, InputGroup } from 'react-bootstrap';
 
 function Register() {
   const [name, setName] = useState('');
@@ -8,17 +8,45 @@ function Register() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Новое состояние для видимости пароля
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (!name || !email || !password) {
       setError('Пожалуйста, заполните все поля.');
       return;
     }
     
-    console.log('Попытка регистрации:', { name, email, password });
+    setIsLoading(true);
     setError('');
-    setSuccess(true);
+
+    try {
+      const response = await fetch('http://localhost:3000/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Ошибка при регистрации');
+      }
+
+      setSuccess(true);
+      setName('');
+      setEmail('');
+      setPassword('');
+      
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -44,6 +72,7 @@ function Register() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </Form.Group>
 
@@ -55,21 +84,33 @@ function Register() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </Form.Group>
 
             <Form.Group className="mb-4" controlId="regPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control 
-                type="password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <InputGroup>
+                <Form.Control 
+                  // Тип меняется в зависимости от состояния
+                  type={showPassword ? "text" : "password"} 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+                <Button 
+                  variant="outline-secondary" 
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex="-1" // Чтобы не сбивать навигацию по клавише Tab
+                >
+                  <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i>
+                </Button>
+              </InputGroup>
             </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-100 mb-3" disabled={success}>
-              Sign Up
+            <Button variant="primary" type="submit" className="w-100 mb-3" disabled={success || isLoading}>
+              {isLoading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : 'Sign Up'}
             </Button>
           </Form>
 
