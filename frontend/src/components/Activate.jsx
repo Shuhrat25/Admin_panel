@@ -16,6 +16,7 @@ function Activate() {
         setStatus('success');
         setMessage('Your account has been successfully verified!');
       } catch (err) {
+        console.error('Ошибка активации:', err.message);
         setStatus('error');
         setMessage('Activation link is invalid or has expired.');
       }
