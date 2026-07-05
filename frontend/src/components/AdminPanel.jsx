@@ -18,20 +18,16 @@ function AdminPanel({ setIsAuthenticated }) {
 
   const navigate = useNavigate();
   
-  // Достаем данные юзера из того хранилища, где они есть
   const currentUserString = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
   const currentUser = JSON.parse(currentUserString || '{}');
 
-  // Обернули в useCallback
   const handleAuthError = useCallback(() => {
-    // Очищаем оба хранилища при выходе или блокировке
     localStorage.removeItem('currentUser');
     sessionStorage.removeItem('currentUser');
     setIsAuthenticated(false);
     navigate('/login');
   }, [navigate, setIsAuthenticated]);
 
-  // Обернули в useCallback, чтобы избежать ошибки ESLint (Cascading renders)
   const fetchUsers = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:3000/api/users', {
@@ -57,7 +53,6 @@ function AdminPanel({ setIsAuthenticated }) {
   }, [currentUser.id, handleAuthError]);
 
   useEffect(() => {
-    // Оборачиваем вызов в асинхронную функцию, чтобы линтер не ругался
     const loadData = async () => {
       await fetchUsers();
     };
@@ -177,7 +172,6 @@ function AdminPanel({ setIsAuthenticated }) {
               checked={isDarkMode}
             />
             <span className="me-3 text-muted fw-semibold">{currentUser.name}</span>
-            {/* Кнопка Logout теперь 100% рабочая */}
             <Button variant={isDarkMode ? 'outline-light' : 'outline-dark'} size="sm" onClick={handleAuthError}>
               <i className="bi bi-box-arrow-right me-1"></i> Logout
             </Button>

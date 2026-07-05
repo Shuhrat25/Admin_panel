@@ -9,7 +9,6 @@ function Login({ setIsAuthenticated }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
-  // Состояние для галочки "Запомнить меня"
   const [rememberMe, setRememberMe] = useState(false);
   
   const navigate = useNavigate();
@@ -40,13 +39,10 @@ function Login({ setIsAuthenticated }) {
 
       const userData = data.user;
 
-      // ЛОГИКА "ЗАПОМНИТЬ МЕНЯ"
       if (rememberMe) {
-        // Ставим срок годности: текущее время + 3 часа (в миллисекундах)
         userData.expiry = Date.now() + 3 * 60 * 60 * 1000;
         localStorage.setItem('currentUser', JSON.stringify(userData));
       } else {
-        // Если галочки нет, сохраняем только на время жизни вкладки браузера
         sessionStorage.setItem('currentUser', JSON.stringify(userData));
       }
       

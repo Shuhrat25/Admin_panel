@@ -5,20 +5,18 @@ import Register from './components/Register';
 import AdminPanel from './components/AdminPanel';
 
 function App() {
-  // Проверяем хранилище ПРИ ЗАГРУЗКЕ приложения
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const sessionUser = sessionStorage.getItem('currentUser');
-    if (sessionUser) return true; // Если есть сессия (до закрытия вкладки)
+    if (sessionUser) return true; 
 
     const localUser = localStorage.getItem('currentUser');
     if (localUser) {
       const user = JSON.parse(localUser);
-      // Проверяем, не истекло ли время (3 часа)
       if (user.expiry && Date.now() > user.expiry) {
-        localStorage.removeItem('currentUser'); // Время вышло, удаляем
+        localStorage.removeItem('currentUser'); 
         return false;
       }
-      return true; // Время еще есть, пускаем
+      return true;
     }
     
     return false;

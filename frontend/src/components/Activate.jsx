@@ -3,19 +3,13 @@ import { useParams, Link } from 'react-router-dom';
 import { Container, Card, Alert, Spinner } from 'react-bootstrap';
 
 function Activate() {
-  const { token } = useParams(); // Получаем токен из URL
-  const [status, setStatus] = useState('loading'); // loading | success | error
+  const { token } = useParams(); 
+  const [status, setStatus] = useState('loading');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    // Функция для запроса на бэкенд
     const activateAccount = async () => {
       try {
-        // Здесь будет реальный запрос к вашему API:
-        // const response = await fetch(`http://localhost:3000/api/users/activate/${token}`);
-        // if (!response.ok) throw new Error('Invalid or expired token');
-        
-        // Имитация задержки сети и успешного ответа
         await new Promise(resolve => setTimeout(resolve, 1500));
         
         console.log(`Отправка токена на сервер: ${token}`);

@@ -10,7 +10,6 @@ function Register() {
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Новое состояние для видимости пароля
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -92,7 +91,6 @@ function Register() {
               <Form.Label>Password</Form.Label>
               <InputGroup>
                 <Form.Control 
-                  // Тип меняется в зависимости от состояния
                   type={showPassword ? "text" : "password"} 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -102,7 +100,7 @@ function Register() {
                 <Button 
                   variant="outline-secondary" 
                   onClick={() => setShowPassword(!showPassword)}
-                  tabIndex="-1" // Чтобы не сбивать навигацию по клавише Tab
+                  tabIndex="-1"
                 >
                   <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i>
                 </Button>
