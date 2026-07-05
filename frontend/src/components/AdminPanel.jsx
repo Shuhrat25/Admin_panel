@@ -70,7 +70,7 @@ function AdminPanel({ setIsAuthenticated }) {
     const method = action === 'delete' ? 'DELETE' : 'PUT';
 
     try {
-      const response = await fetch(`http://localhost:3000/api/users/${endpoint}`, {
+      const response = await fetch(`https://admin-panel-api-e14a.onrender.com/api/users/${endpoint}`, {
         method,
         headers: { 
           'Content-Type': 'application/json',

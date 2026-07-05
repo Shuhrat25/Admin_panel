@@ -26,7 +26,7 @@ function Login({ setIsAuthenticated }) {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/api/login', {
+      const response = await fetch('https://admin-panel-api-e14a.onrender.com/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
