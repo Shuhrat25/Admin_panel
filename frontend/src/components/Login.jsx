@@ -1,20 +1,31 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
 
-function Login() {
+// Принимаем пропс setIsAuthenticated
+function Login({ setIsAuthenticated }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  
+  const navigate = useNavigate(); // Хук для перенаправления
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     if (!email || !password) {
       setError('Пожалуйста, заполните все поля.');
       return;
     }
+    
     console.log('Попытка входа:', { email, password });
     setError('');
+    
+    // Меняем статус авторизации на true
+    setIsAuthenticated(true);
+    
+    // Перенаправляем пользователя на главную страницу (в Admin Panel)
+    navigate('/');
   };
 
   return (
