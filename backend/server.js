@@ -140,6 +140,11 @@ app.delete('/api/users/delete', checkUserStatus, async (req, res) => {
     res.status(500).json({ error: 'Failed to delete users' });
   }
 });
-app.listen(PORT, () => {
-  console.log(`Бэкенд сервер успешно запущен на http://localhost:${PORT}`);
+pool.initialize().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Бэкенд сервер успешно запущен на http://localhost:${PORT}`);
+  });
+}).catch((err) => {
+  console.error('Database initialization failed:', err.message);
+  process.exit(1);
 });
