@@ -1,3 +1,4 @@
+import { API_URL } from '../api';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -30,7 +31,7 @@ function AdminPanel({ setIsAuthenticated }) {
 
   const fetchUsers = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/users', {
+      const response = await fetch(`${API_URL}/api/users`, {
         headers: { 'x-user-id': currentUser.id }
       });
       
@@ -65,7 +66,7 @@ function AdminPanel({ setIsAuthenticated }) {
     const method = action === 'delete' ? 'DELETE' : 'PUT';
 
     try {
-      const response = await fetch(`https://admin-panel-api-e14a.onrender.com/api/users/${endpoint}`, {
+      const response = await fetch(`${API_URL}/api/users/${endpoint}`, {
         method,
         headers: { 
           'Content-Type': 'application/json',

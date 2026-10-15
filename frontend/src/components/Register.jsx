@@ -1,3 +1,4 @@
+import { API_URL } from '../api';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Card, Form, Button, Alert, Spinner, InputGroup } from 'react-bootstrap';
@@ -24,7 +25,7 @@ function Register() {
     setError('');
 
     try {
-      const response = await fetch('https://admin-panel-api-e14a.onrender.com/api/register', {
+      const response = await fetch(`${API_URL}/api/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })

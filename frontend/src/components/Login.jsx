@@ -1,3 +1,4 @@
+import { API_URL } from '../api';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Container, Card, Form, Button, Alert, Spinner, InputGroup } from 'react-bootstrap';
@@ -25,7 +26,7 @@ function Login({ setIsAuthenticated }) {
     setError('');
 
     try {
-      const response = await fetch('https://admin-panel-api-e14a.onrender.com/api/login', {
+      const response = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
